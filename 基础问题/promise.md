@@ -233,3 +233,58 @@ Promise.all(resolveAll([promise1, promise2, promise3], errors)).then(res => {
 
 和try catch finally一样，不论是onfulilled或onRejected都会执行，当然不过不catch住reject的错误，finally依旧执行，而错误依旧抛出，且不被onerror捕获。
 
+### 4.trycatch
+
+与promise一样，trycatch只能捕捉到第一层的promise的错误。
+
+如
+
+```javascript
+async function main() {
+			try {
+                await pro1();
+				await pro2()
+			} catch (e) {
+				setTimeout(()=>{
+                    throw e;
+                })
+			}
+		}
+```
+
+当pro1抛出错误，pro2也不会执行。
+
+```js
+async function main() {
+			try {
+                await pro1().then(()=>{
+                    pro2();
+                })
+			} catch (e) {
+				setTimeout(()=>{
+                    throw e;
+                })
+			}
+		}
+```
+
+运行到pro2报错时，不会被catch到，因为pro2在pro1的then中独立运行了，如果换成以下做法则可以获取到错误
+
+```js
+async function main() {
+			try {
+                await pro1().then(()=>{
+                    return pro2();
+                })
+			} catch (e) {
+				setTimeout(()=>{
+                    throw e;
+                })
+			}
+		}
+```
+
+因为pro2返回的promise又由外层的await处理了。
+
+*与promise一样，await中发生的错误时uncatched promiseerror，不被window.onerror得到，还是需要在catch中settimeout抛出错误*
+
