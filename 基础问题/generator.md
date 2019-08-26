@@ -29,3 +29,16 @@
 - ink
 - commander
 
+
+
+
+
+*8.21 TODO 1.0.10*
+
+generate 插入crud：
+
+- 指定目录
+- 指定资源名
+- 指定@/api/{apiname}
+- 移除store=>换成vuex，比较直观
+- 【optional】指定需要的组件
