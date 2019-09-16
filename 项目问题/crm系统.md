@@ -221,3 +221,36 @@ const initAppByToken = async () => {
 };
 ```
 
+### 代码结构组织
+
+- 对于2级以上路由，如客户详情，可以这样
+
+```
+- customer
+	- components
+	- basic
+		- component
+		- store
+		- index.vue
+	- store
+	- container.vue
+```
+
+container.vue即放router-view的组件，以嵌套子路由。
+
+customer/store中的数据可以在子路由间共享
+
+子路由中的store只能由该子路由访问。
+
+- 对于1级路由
+
+  可以这样
+
+```
+- customers
+	- store
+	- component
+	- index.vue
+```
+
+- 对于多个界面间共享的数据放在vuex中
