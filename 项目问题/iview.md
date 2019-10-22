@@ -21,3 +21,63 @@ handlePageSizeChange(pageSize) {
 },
 ```
 
+### input自动设置值
+
+input在ie11无法初始化值
+
+```
+<FormItem label="日志主题" prop="serviceTitle">
+                <Input v-model.trim="form.serviceTitle" placeholder="售前/售后+第N次拜访+其他重点" />
+            </FormItem>
+            <FormItem label="位置" prop="servicePosition">
+                <Input v-model.trim="form.servicePosition" placeholder="11" />
+            </FormItem>
+```
+
+日志主题无法获取值，位置可以
+
+- type=textarea可以
+- 去掉placeholder可以（但位置的input带placeholder是有值的）
+- placeholder=售前/售后+第N次拜访+其他重点 就无法获取值
+- 结论：**placeholder不能是中文** 
+
+但是在其他页面中，placeholder为英文是可以的。
+
+```
+<EditForm ref="modal-edit-form" v-if="formVisible" />
+```
+
+- 去除formVisible可以显示
+- 保留formvisible，下面这样也行
+
+```
+this.$nextTick(() => {
+               setTimeout(()=>{
+                  this.$refs['modal-edit-form'].initData(row);
+               })
+            });
+```
+
+- 发现在form组件的mounted中initData可以显示出数据
+
+  **将initData的过程放到form的mounted中，解决问题。**
+
+  ```
+  // edit-form.vue
+  mounted() {
+          this.initData(this.editRow);
+      },
+  // edit-modal
+  openModal(row) {
+              this.visible = true;
+              this.customerId = this.$route.params.customerId;
+              this.editRow = row || null;
+              this.customerLinkmanId = row && row.customerLinkmanId;
+              this.readOnly = !!row.readOnly;
+              this.$nextTick(() => {
+                  this.formVisible = true;
+              });
+          },
+  ```
+
+  
