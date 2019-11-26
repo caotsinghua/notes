@@ -1,9 +1,5 @@
 ## vue格式化方案
 
-#### html,css,js规范
-
-暂无
-
 #### vue风格指南
 
 [链接]( [https://cn.vuejs.org/v2/style-guide/index.html#%E4%BC%98%E5%85%88%E7%BA%A7-A-%E7%9A%84%E8%A7%84%E5%88%99%EF%BC%9A%E5%BF%85%E8%A6%81%E7%9A%84-%E8%A7%84%E9%81%BF%E9%94%99%E8%AF%AF](https://cn.vuejs.org/v2/style-guide/index.html#优先级-A-的规则：必要的-规避错误) )
@@ -22,7 +18,11 @@
 
   - eslint-plugin-vue [参考]( https://eslint.vuejs.org/rules/v-on-style.html )
 
-    使用vue风格指南的essential部分和@vue/standard
+    使用vue风格指南的essential部分
+    
+  - eslint-standard
+
+    参考 https://github.com/standard/eslint-config-standard/blob/master/eslintrc.json 
 
 - 自定义配置项
 
