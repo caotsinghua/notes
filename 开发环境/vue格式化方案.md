@@ -2,7 +2,7 @@
 
 #### vue风格指南
 
-[链接]( [https://cn.vuejs.org/v2/style-guide/index.html#%E4%BC%98%E5%85%88%E7%BA%A7-A-%E7%9A%84%E8%A7%84%E5%88%99%EF%BC%9A%E5%BF%85%E8%A6%81%E7%9A%84-%E8%A7%84%E9%81%BF%E9%94%99%E8%AF%AF](https://cn.vuejs.org/v2/style-guide/index.html#优先级-A-的规则：必要的-规避错误) )
+[链接](https://cn.vuejs.org/v2/style-guide/index.html#%E4%BC%98%E5%85%88%E7%BA%A7-A-%E7%9A%84%E8%A7%84%E5%88%99%EF%BC%9A%E5%BF%85%E8%A6%81%E7%9A%84-%E8%A7%84%E9%81%BF%E9%94%99%E8%AF%AF](https://cn.vuejs.org/v2/style-guide/index.html#优先级-A-的规则：必要的-规避错误) )
 
 ## 代码检查和格式化(eslint,prettier)
 

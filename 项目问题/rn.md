@@ -46,7 +46,7 @@ emoji表情：https://github.com/omnidan/node-emoji
 相机：https://github.com/react-native-community/react-native-camera
 热更新：https://github.com/Microsoft/react-native-code-push
 通讯录：https://github.com/rt2zz/react-native-contacts
-element-ui：https://github.com/react-native-training/react-native-elements
+elements：https://github.com/react-native-training/react-native-elements
 文件传输：https://github.com/wkh237/react-native-fetch-blob
 iap：https://github.com/dooboolab/react-native-iap
 图片选择器，这里有两个，各有特点：
