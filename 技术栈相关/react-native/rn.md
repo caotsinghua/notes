@@ -23,8 +23,8 @@ rn原生的geolocation无法在国内安卓使用（需要谷歌框架支持）�
 
 - 极光推送 (jpush-react-native,jcore-react-native,)
   - 应用杀死进程后无法推送( https://segmentfault.com/q/1010000017030182 )
-
 - 其他推送
+-  https://www.jianshu.com/p/6a742f4f0f2b 
 
 ### ui
 
@@ -73,7 +73,7 @@ icon：https://github.com/oblador/react-native-vector-icons
 
 1. 获取开发版
 
-    https://lbs.amap.com/faq/android/map-sdk/create-project/43112 
+   https://lbs.amap.com/faq/android/map-sdk/create-project/43112 
 
    ```js
    cd .android
@@ -84,7 +84,17 @@ icon：https://github.com/oblador/react-native-vector-icons
 
        在.android目录下 keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -validity 10000 生成一个
 
-     
+     注意rn的build.gradle中的默认密码是android
+
+   创建发布版本的密钥：
+
+   这应该是个私有的
+
+   ```
+   keytool -genkeypair -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+   ```
+
+   
 
 2. 获取发布版
 
@@ -104,3 +114,73 @@ icon：https://github.com/oblador/react-native-vector-icons
 
 - react-navigation不支持（有解决方案，增加复杂度）
 
+### AS打包Duplicate resources
+
+在nodemoudles，react-native下的react.bundle中
+
+```
+ // Create dirs if they are not there (e.g. the "clean" task just ran)
+            doFirst {
+                jsBundleDir.deleteDir()
+                jsBundleDir.mkdirs()
+                resourcesDir.deleteDir()
+                resourcesDir.mkdirs()
+                jsIntermediateSourceMapsDir.deleteDir()
+                jsIntermediateSourceMapsDir.mkdirs()
+                jsSourceMapsDir.deleteDir()
+                jsSourceMapsDir.mkdirs()
+            }
+            doLast {
+                def moveFunc = { resSuffix ->
+                File originalDir = file("$buildDir/generated/res/react/release/${resSuffix}");
+                if (originalDir.exists()) {
+                File destDir = file("$buildDir/../src/main/res/${resSuffix}");
+                ant.move(file: originalDir, tofile: destDir);
+                }
+                }
+                moveFunc.curry("drawable-ldpi").call()
+                moveFunc.curry("drawable-mdpi").call()
+                moveFunc.curry("drawable-hdpi").call()
+                moveFunc.curry("drawable-xhdpi").call()
+                moveFunc.curry("drawable-xxhdpi").call()
+                moveFunc.curry("drawable-xxxhdpi").call()
+                moveFunc.curry("raw").call()
+            }
+```
+
+参考: https://github.com/facebook/react-native/issues/26245 
+
+给app签名时，如华为推送需要sha256，需要注意在build.gradle中引用的签名和该256对应的keystore要一致。
+
+adb shell am start -W -a android.intent.action.VIEW -d "mylink://com.pushexample/messages/cedsd" com.pushexample
+
+```
+2019-12-16 10:30:42.355 16523-16523/? D/[debug]: 应用创建
+2019-12-16 10:30:42.620 16523-16523/? D/[debug]: main activity活动创建
+2019-12-16 10:30:42.625 16523-16523/? D/[debug]: mainActivity的onStart
+2019-12-16 10:30:42.635 16523-16523/? D/[debug]: 没有额外信息extraData
+```
+
+#### 当mainfest中属性和第三方包设置的属性冲突时
+
+使用 tools:replace ，替换第三方库的属性。
+
+ https://blog.csdn.net/CHS007chs/article/details/85849625 
+
+
+
+- Could not find build of variant which supports density 420 and an ABI in x86
+
+  设置信鸽后出现。
+
+  修改
+
+  ```
+  ndk {
+              //根据需要 自行选择添加的对应cpu类型的.so库。
+              abiFilters 'armeabi', 'armeabi-v7a', 'arm64-v8a','x86','x86_64'
+              // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+          }
+  ```
+
+abi解释: https://www.jianshu.com/p/d2119b3880d8 
