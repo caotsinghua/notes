@@ -82,3 +82,214 @@
 
 ### overflow与锚点定位
 
+锚点定位的方法：
+
+1. ```html
+   <a href="#1">发展历程</a>
+   <a name="1">锚点</a>
+   ```
+
+2. ```
+   <a href="#1">发展历程</a>
+   <h1 id="1"></h1>
+   ```
+
+**锚点定位的触发条件**
+
+1. url地址中的锚链与锚点元素对应并有交互行为。
+2. 可focus的锚点出于focus状态
+
+*前提是锚链值可以找到页面中对应的元素，并且是**非隐藏**状态。*
+
+如果锚链值是一个简单的#，则定位行为是回到顶部。
+
+
+
+**focus锚点定位**指的是类似链接或按钮，输入框等可以被focus的元素在被focus时发生的页面重定位现象。
+
+比如tab快速定位可focus的元素，如果元素在屏幕外，则浏览器会自动重定位，将该元素定位到屏幕中。
+
+或者`document.querySelector('input').focus()`
+
+**差异**：url地址锚链定位是让元素定位在浏览器窗体上边缘，而focus锚点定位只是让元素在和、窗体范围内显示，不一定是上边缘。
+
+
+
+#### 锚点定位的本质
+
+锚点定位行为的发生，本质是通过改变**容器**滚动高度/宽度实现的。
+
+这也也可以滚动
+
+```
+<div class="box">
+        <div class="content"></div>
+        <h4 id="title">底部标题</h4>
+    </div>
+    <a href="#title">点击测试</a>
+   .box{
+            height: 100px;
+            border: 1px solid;
+            overflow: auto;
+
+        }
+        .content{
+            height: 400px;
+            background-color: #eee;
+        }
+```
+
+
+
+- **由内而外**：普通元素和窗体同时可滚动时，会由内而外的触发所有可滚动窗体的锚点定位行为。
+
+  在上面例子基础上添加
+
+  ```
+  <div class="box">
+          <div class="content"></div>
+          <h4 id="title">底部标题</h4>
+      </div>
+      <a href="#title">点击测试</a>
+      <div style="height: 800px;"></div>
+  ```
+
+  
+
+#### overflow:hidden的元素也是可滚动，与auto/scroll的区别仅在于没有滚动条。
+
+- 利用overflowhidden和锚点实现轮播图
+
+  ```
+  div class="container">
+          <div class="slider">
+              <ul class="wrap">
+                  <li class="item" id="1">1</li>
+                  <li class="item" id="2">2</li>
+                  <li class="item" id="3">3</li>
+                  <li class="item" id="4">4</li>
+              </ul>
+          </div>
+          <div>
+              <a href="#1">1</a>
+              <a href="#2">2</a>
+              <a href="#3">3</a>
+              <a href="#4">4</a>
+          </div>
+          <div style="height:999px"></div>
+      </div>
+  <style>
+          ul{
+              margin:0;
+              padding:0;
+              display: flex;
+          }
+          .item{
+              height: 100px;
+              background-color:rosybrown;
+              list-style: none;
+              width: 300px;
+              flex-shrink: 0;
+          }
+          .slider{
+              width: 300px;
+              border: 1px dashed;
+              height: 100px;
+              overflow: hidden;
+              scroll-behavior: smooth;
+          }
+  
+      </style>
+  ```
+
+  可以通过锚点定位来定位到item的位置。
+
+  缺点：1. 要固定宽度/对于垂直的要固定高度
+
+  2.如果页面同时有滚动条，则会由内而外的触发定位，将锚点元素定位到界面顶部，引起页面移动。
+
+- 使用focus构建标签选择
+
+  ```
+  <div class="container">
+          <ul class="slider">
+              <li class="item">
+                  <input id="1" class="slide-input">
+                  <span>1</span>
+              </li>
+              <li class="item">
+                  <input id="2" class="slide-input">
+                  <span>2</span>
+              </li>
+              <li class="item">
+                  <input id="3" class="slide-input">
+                  <span>3</span>
+              </li>
+              <li class="item">
+                  <input id="4" class="slide-input">
+                  <span>4</span>
+              </li>
+          </ul>
+      </div>
+      <div>
+          <ul>
+              <li><label for="1">1</label></li>
+              <li><label for="2">2</label></li>
+              <li><label for="3">3</label></li>
+              <li><label for="4">4</label></li>
+          </ul>
+      </div>
+      <style>
+          ul{
+              list-style: none;
+              margin: 0;
+              padding: 0;
+  
+          }
+          .container{
+              width: 300px;
+              overflow: hidden;
+              border: 1px dashed;
+              scroll-behavior: smooth;
+              overflow: hidden;
+          }
+          .slider{
+              display:inline-flex;
+              flex-wrap: nowrap;
+          }
+          .item{
+              width:300px;
+              height: 200px;
+              background: #eee;
+              flex-shrink: 0;
+              position: relative;
+          }
+          .slide-input{
+              position: absolute;
+              top: 0;
+              left: 50%;
+              width: 1px;
+              height: 1px;
+              border: 0;
+              padding: 0;
+              clip: rect(0,0,0,0);
+          }
+      </style>
+  ```
+
+  如果内容在可视窗口外依然会出现跳动的问题，可以使用js解决。
+
+关于选项卡切换，还可以使用checked伪类+label+单选按钮实现
+
+*还可以基于overflowhidden可滚动的特点，自定义滚动条*
+
+即父元素overflowhidden，然后基于父元素自身的scrolltop改变来实现滚动条效果。
+
+好处：
+
+1. 实现简单，无需边界判断。就算scrolltop值-999，浏览器也按照0渲染。
+2. 可与原生的scroll时间天然集成。如滚动延迟加载图片效果，图片位置计算往往和scrolltop相关。
+3. 无需改变子元素结构。
+
+
+
