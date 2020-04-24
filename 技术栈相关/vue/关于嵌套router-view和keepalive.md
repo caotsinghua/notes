@@ -118,14 +118,12 @@ inactive=false有几种情况：
 
 ## 解决方法：
 
-1. 在router-view加key=route.path
-
-   
+1. 在router-view加key
 
    渲染的是这样的
 
    ```js
-   asyncFactory: undefined
+asyncFactory: undefined
    asyncMeta: undefined
    children: undefined
    componentInstance: undefined
@@ -150,7 +148,7 @@ inactive=false有几种情况：
    tag: "vue-component-33-me"
    text: undefined
    ```
-
+   
    可见tag还是me组件，但是key是/menu，keep-alive根据这个key直接获取到home组件的缓存。从而渲染正确的页面。
 
    需要注意的是，每次路由变化，都会有一个key产生，即当从tabContainer跳转到其他页面时，由于路由先变化，导致key变化，引起router-view的更新，会创建一个key为目标路由的组件，但实例还是当前组件。（如跳转到登陆页面，登陆页面并不在tabContainer中，但还是会有一个login的key的缓存）
@@ -158,7 +156,7 @@ inactive=false有几种情况：
    解决方法是给key加个过滤，只有指定的key才缓存。
 
    ```
-   <keep-alive :include="cachedList">
+<keep-alive :include="cachedList">
                    <router-view :key="currentKey" v-if="currentKey"></router-view>
                </keep-alive>
                currentKey() {
@@ -166,7 +164,7 @@ inactive=false有几种情况：
                return whiteList.find(name => name === this.$route.name) || '';
            }
    ```
-
+   
    这样缓存中会多一个key为''的组件实例。需要注意的是，要在router-view加v-if，否则router-view会重新渲染一次之前的页面。
 
    当然加v-if会出现一个瞬间的白屏，不是平滑的进行过渡。
@@ -199,7 +197,61 @@ inactive=false有几种情况：
 
 4. 将tabcontainer中的keepalive去除，多个tab分多个页面进行缓存。
 
+5. 在container页面的beforeRouterLeave的钩子中判断是否去登陆页面，如果是的话销毁当前页面。
 
+   ```
+   <keep-alive :include="cachedList">
+                   <router-view></router-view>
+               </keep-alive>
+   beforeRouteLeave(to, from, next) {
+           if (to.name === LOGIN_NAME) {
+               this.$destroy();
+           }
+           next();
+       },
+   ```
+
+6. 动态cachedList
+
+   只有访问过的页面&cached设为true，才添加到cachedList中。如果重新登陆，就把cacheList清空。
+
+   > 参考vue-admin
+   >
+   > logout({ commit, state, dispatch }) {
+   >
+   >   return new Promise((resolve, reject) => {
+   >
+   >    logout(state.token).then(() => {
+   >
+   > ​    commit('SET_TOKEN', '')
+   >
+   > ​    commit('SET_ROLES', [])
+   >
+   > ​    removeToken()
+   >
+   > ​    resetRouter()
+   >
+   > 
+   >
+   > ​    *// reset visited views and cached views*
+   >
+   > ​    *// to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485*
+   >
+   > ​    dispatch('tagsView/delAllViews', null, { root: true })
+   >
+   > 
+   >
+   > ​    resolve()
+   >
+   >    }).catch(error => {
+   >
+   > ​    reject(error)
+   >
+   >    })
+   >
+   >   })
+   >
+   >  },
 
 ## 注意：
 
