@@ -108,7 +108,7 @@
 
    当dirty=true时重新触发watcher.get,再将dirty=false。
 
-   那么什么时候dirty=true?在依赖的值发生更新的时候，将dirty=true，这样下次获取computed值的时候一定是最新的。并且获取完，dirty又变为false，意味着如果值没有更新，那么computed获取值时永远是之前的那个值，不会重新计算（即使重新计算value也不会变）
+   那么什么时候dirty=true?在依赖的值发生更新的时候，将dirty=true，这样下次获取computed值的时候一定是最新的。并且获取完，dirty又变为false，意味着如果值没有更新，那么computed获取值时永远是之前的那个值，不会重新计算（即使重新计算，value也不会变）
 
 ### ps:
 
