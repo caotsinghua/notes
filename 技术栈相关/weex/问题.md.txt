@@ -1,0 +1,13 @@
+1.slider 无法缓存状态
+通过tab设置index，切换页面返回可以缓存状态。
+通过滑动切换index，切换页面再返回会回到初始index的状态，如果用tab改变了，那么就是tab改变过的index。
+该现象在小程序和app中表现不一致。
+小程序存在问题。
+
+原因：slider设置flex:1就会有这个问题。
+解决方法：直接计算高度来设置slider的height
+
+2.header设置padding=statusBarHeight,弹窗后渐变改变
+通过把容器padding改成内部组件的margin解决，这样容器的高度一直固定。
+
+3.
